@@ -14,3 +14,4 @@ src.github.gajicoding.schedule_api_project
 ├── service             # 비즈니스 로직
 └── ScheduleApiProjectApplication.java
 ```
+
