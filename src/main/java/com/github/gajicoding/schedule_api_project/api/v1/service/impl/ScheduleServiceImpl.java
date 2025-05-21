@@ -1,5 +1,6 @@
 package com.github.gajicoding.schedule_api_project.api.v1.service.impl;
 
+import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.SchedulePageResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.ScheduleRequestDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.ScheduleResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.Schedule;
@@ -10,6 +11,8 @@ import com.github.gajicoding.schedule_api_project.api.v1.repository.ScheduleRepo
 import com.github.gajicoding.schedule_api_project.api.v1.repository.UserRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,5 +60,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     public void delete(Long id) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptions.notFoundById(id));
         scheduleRepository.delete(schedule);
+    }
+
+    @Override
+    public Page<SchedulePageResponseDTO> findAllPages(Pageable pageable) {
+        return scheduleRepository.findAllWithPage(pageable);
     }
 }

@@ -1,12 +1,17 @@
 package com.github.gajicoding.schedule_api_project.api.v1.controller;
 
 
+import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.SchedulePageResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.ScheduleRequestDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.ScheduleResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.service.ScheduleService;
 import com.github.gajicoding.schedule_api_project.api.v1.validation.CreateGroup;
 import com.github.gajicoding.schedule_api_project.api.v1.validation.UpdateGroup;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -45,5 +50,15 @@ public class ScheduleController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         scheduleService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    /* Lv 8. 일정 페이징 조회 */
+    @GetMapping("/pages")
+    public ResponseEntity<Page<SchedulePageResponseDTO>> findAllPages(
+            // page = 0, size = 10 는 디폴트 값
+            @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return new ResponseEntity<>(scheduleService.findAllPages(pageable), HttpStatus.OK);
     }
 }
