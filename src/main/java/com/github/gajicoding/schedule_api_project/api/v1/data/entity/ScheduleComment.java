@@ -12,16 +12,23 @@ public class ScheduleComment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column
     private String contents;
 
-    @Setter
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Setter
     @ManyToOne
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+
+    public ScheduleComment() {}
+
+    public ScheduleComment(String contents, User user, Schedule schedule) {
+        this.contents = contents;
+        this.user = user;
+        this.schedule = schedule;
+    }
 }
