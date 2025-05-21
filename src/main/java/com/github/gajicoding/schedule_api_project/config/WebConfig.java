@@ -1,6 +1,6 @@
 package com.github.gajicoding.schedule_api_project.config;
 
-import com.github.gajicoding.schedule_api_project.filter.AuthFilter;
+import com.github.gajicoding.schedule_api_project.api.v1.filter.AuthFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
