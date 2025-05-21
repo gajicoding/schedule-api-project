@@ -1,12 +1,17 @@
 package com.github.gajicoding.schedule_api_project.data.entity;
 
+import com.github.gajicoding.schedule_api_project.data.dto.schedule.ScheduleRequestDTO;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Table(name = "Schedules")
 @Getter
+@Builder
+@AllArgsConstructor
 public class Schedule extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +27,13 @@ public class Schedule extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Schedule() {
+        // no-arg 생성자가 포함되어야 함
+    }
+
+    public void update(ScheduleRequestDTO requestDTO) {
+        this.title = requestDTO.getTitle();
+        this.contents = requestDTO.getContents();
+    }
 }

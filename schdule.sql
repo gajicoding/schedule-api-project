@@ -1,7 +1,7 @@
 -- DB 생성
-DROP DATABASE IF EXISTS schedules;
-CREATE DATABASE IF NOT EXISTS schedules;
-USE schedules;
+DROP DATABASE IF EXISTS schedule;
+CREATE DATABASE IF NOT EXISTS schedule;
+USE schedule;
 
 -- users 테이블 생성
 DROP TABLE IF EXISTS users;
