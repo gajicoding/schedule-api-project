@@ -1,0 +1,46 @@
+package com.github.gajicoding.schedule_api_project.controller;
+
+
+import com.github.gajicoding.schedule_api_project.data.dto.schedule.ScheduleRequestDTO;
+import com.github.gajicoding.schedule_api_project.data.dto.schedule.ScheduleResponseDTO;
+import com.github.gajicoding.schedule_api_project.service.ScheduleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/schedules")
+@RequiredArgsConstructor
+public class ScheduleController {
+    private final ScheduleService scheduleService;
+
+    /* Lv 1. 일정 CRUD */
+    @PostMapping
+    public ResponseEntity<ScheduleResponseDTO> save(@RequestBody ScheduleRequestDTO requestDTO) {
+        return new ResponseEntity<>(scheduleService.save(requestDTO), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDTO> findById(@PathVariable Long id) {
+        return new ResponseEntity<>(scheduleService.findById(id), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ScheduleResponseDTO>> findAll() {
+        return new ResponseEntity<>(scheduleService.findAll(), HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDTO> update(@PathVariable Long id, @RequestBody ScheduleRequestDTO requestDTO) {
+        return new ResponseEntity<>(scheduleService.update(id, requestDTO), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        scheduleService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+}
