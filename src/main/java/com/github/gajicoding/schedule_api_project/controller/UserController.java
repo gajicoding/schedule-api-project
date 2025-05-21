@@ -1,9 +1,11 @@
 package com.github.gajicoding.schedule_api_project.controller;
 
+import com.github.gajicoding.schedule_api_project.data.dto.user.UserLoginRequestDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserRequestDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserResponseDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserSignUpRequestDTO;
 import com.github.gajicoding.schedule_api_project.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,5 +51,16 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDTO> signup(@RequestBody UserSignUpRequestDTO requestDTO) {
         return new ResponseEntity<>(userService.signup(requestDTO), HttpStatus.OK);
+    }
+
+    /* Lv 4. 로그인 */
+    @PostMapping("/login")
+    public ResponseEntity<UserResponseDTO> login(@RequestBody UserLoginRequestDTO requestDTO, HttpSession session) {
+        UserResponseDTO userResponseDTO = userService.login(requestDTO);
+
+        // 세션 저장
+        session.setAttribute("userId", userResponseDTO.getId());
+
+        return new ResponseEntity<>(userResponseDTO, HttpStatus.OK);
     }
 }

@@ -1,5 +1,6 @@
 package com.github.gajicoding.schedule_api_project.service;
 
+import com.github.gajicoding.schedule_api_project.data.dto.user.UserLoginRequestDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserRequestDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserResponseDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserSignUpRequestDTO;
@@ -18,4 +19,6 @@ public interface UserService {
     void delete(Long id);
 
     UserResponseDTO signup(UserSignUpRequestDTO requestDTO);
+
+    UserResponseDTO login(UserLoginRequestDTO requestDTO);
 }

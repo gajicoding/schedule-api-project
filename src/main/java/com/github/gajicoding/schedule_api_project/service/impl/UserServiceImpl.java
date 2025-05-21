@@ -1,6 +1,7 @@
 package com.github.gajicoding.schedule_api_project.service.impl;
 
 import com.github.gajicoding.schedule_api_project.common.security.PasswordEncryptor;
+import com.github.gajicoding.schedule_api_project.data.dto.user.UserLoginRequestDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserRequestDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserResponseDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserSignUpRequestDTO;
@@ -60,4 +61,15 @@ public class UserServiceImpl implements UserService {
 
         return new UserResponseDTO(userRepository.save(user));
     }
+
+    @Override
+    public UserResponseDTO login(UserLoginRequestDTO requestDTO) {
+        User user = userRepository.findUserByEmail(requestDTO.getEmail()).orElseThrow(UserExceptions::loginFailed);
+        if(!passwordEncryptor.matches(requestDTO.getPassword(), user.getPassword())) {
+            throw UserExceptions.loginFailed();
+        }
+        return new UserResponseDTO(user);
+    }
+
+
 }
