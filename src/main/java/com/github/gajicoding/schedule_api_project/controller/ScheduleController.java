@@ -17,7 +17,7 @@ import java.util.List;
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
-    /* 일정 CRUD */
+    /* Lv 1. 일정 CRUD */
     @PostMapping
     public ResponseEntity<ScheduleResponseDTO> save(@RequestBody ScheduleRequestDTO requestDTO) {
         return new ResponseEntity<>(scheduleService.save(requestDTO), HttpStatus.CREATED);

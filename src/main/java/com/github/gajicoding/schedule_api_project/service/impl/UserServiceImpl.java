@@ -1,7 +1,9 @@
 package com.github.gajicoding.schedule_api_project.service.impl;
 
+import com.github.gajicoding.schedule_api_project.common.security.PasswordEncryptor;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserRequestDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserResponseDTO;
+import com.github.gajicoding.schedule_api_project.data.dto.user.UserSignUpRequestDTO;
 import com.github.gajicoding.schedule_api_project.data.entity.User;
 import com.github.gajicoding.schedule_api_project.exception.UserExceptions;
 import com.github.gajicoding.schedule_api_project.repository.UserRepository;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncryptor passwordEncryptor;
 
     @Override
     public UserResponseDTO create(UserRequestDTO requestDTO) {
@@ -48,5 +51,13 @@ public class UserServiceImpl implements UserService {
     public void delete(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> UserExceptions.notFoundById(id)); // 유저 체크
         userRepository.delete(user);
+    }
+
+    @Override
+    public UserResponseDTO signup(UserSignUpRequestDTO requestDTO) {
+        User user = requestDTO.toEntity();
+        user.setPassword(passwordEncryptor.encode(user.getPassword()));
+
+        return new UserResponseDTO(userRepository.save(user));
     }
 }

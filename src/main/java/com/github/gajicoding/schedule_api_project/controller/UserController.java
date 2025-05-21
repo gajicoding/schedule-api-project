@@ -2,6 +2,7 @@ package com.github.gajicoding.schedule_api_project.controller;
 
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserRequestDTO;
 import com.github.gajicoding.schedule_api_project.data.dto.user.UserResponseDTO;
+import com.github.gajicoding.schedule_api_project.data.dto.user.UserSignUpRequestDTO;
 import com.github.gajicoding.schedule_api_project.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    /* 유저 CRUD */
+    /* Lv 2. 유저 CRUD */
     @PostMapping
     public ResponseEntity<UserResponseDTO> create(@RequestBody UserRequestDTO requestDTO) {
         return new ResponseEntity<>(userService.create(requestDTO), HttpStatus.CREATED);
@@ -41,5 +42,12 @@ public class UserController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    /* Lv 3. 회원 가입 */
+    @PostMapping("/signup")
+    public ResponseEntity<UserResponseDTO> signup(@RequestBody UserSignUpRequestDTO requestDTO) {
+        return new ResponseEntity<>(userService.signup(requestDTO), HttpStatus.OK);
     }
 }
