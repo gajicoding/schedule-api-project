@@ -11,6 +11,8 @@ import com.github.gajicoding.schedule_api_project.common.security.PasswordEncryp
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -19,18 +21,30 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserResponseDTO signup(UserSignUpRequestDTO requestDTO) {
-        User user = requestDTO.toEntity();
-        user.setPassword(passwordEncryptor.encode(user.getPassword()));
+        Optional<User> existingUser = userRepository.findUserByEmail(requestDTO.getEmail());
 
+        // 이메일 중복 체크
+        if(existingUser.isPresent()) {
+            throw UserExceptionFactory.emailAlreadyExists(requestDTO.getEmail());
+        }
+
+        User user = requestDTO.toEntity();
+
+        // 비밀번호 암호화 후 저장
+        user.setPassword(passwordEncryptor.encode(user.getPassword()));
         return new UserResponseDTO(userRepository.save(user));
     }
 
     @Override
     public UserResponseDTO login(UserLoginRequestDTO requestDTO) {
+        // 이메일로 유저 찾기
         User user = userRepository.findUserByEmail(requestDTO.getEmail()).orElseThrow(UserExceptionFactory::loginFailed);
+
+        // 비밀번호 일치 확인
         if(!passwordEncryptor.matches(requestDTO.getPassword(), user.getPassword())) {
             throw UserExceptionFactory.loginFailed();
         }
+
         return new UserResponseDTO(user);
     }
 }
