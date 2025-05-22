@@ -4,6 +4,7 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserReque
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.service.UserService;
 import com.github.gajicoding.schedule_api_project.api.v1.validation.CreateGroup;
+import com.github.gajicoding.schedule_api_project.api.v1.validation.DeleteGroup;
 import com.github.gajicoding.schedule_api_project.api.v1.validation.UpdateGroup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -66,8 +67,8 @@ public class UserController {
      * @return 수정된 유저 정보가 담긴 DTO와 HTTP 상태 코드 200 (OK)
      */
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> update(@PathVariable Long id, @RequestBody @Validated(UpdateGroup.class) UserRequestDTO requestDTO) {
-        return new ResponseEntity<>(userService.update(id, requestDTO), HttpStatus.OK);
+    public ResponseEntity<UserResponseDTO> updateName(@PathVariable Long id, @RequestBody @Validated(UpdateGroup.class) UserRequestDTO requestDTO) {
+        return new ResponseEntity<>(userService.updateName(id, requestDTO), HttpStatus.OK);
     }
 
     /**
@@ -77,8 +78,8 @@ public class UserController {
      * @return HTTP 상태 코드 204 (No Content)
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        userService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id, @RequestBody @Validated(DeleteGroup.class) UserRequestDTO requestDTO) {
+        userService.delete(id, requestDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

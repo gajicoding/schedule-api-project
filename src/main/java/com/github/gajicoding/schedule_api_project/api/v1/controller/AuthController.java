@@ -4,7 +4,6 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserLogin
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserSignUpRequestDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.service.AuthService;
-import com.github.gajicoding.schedule_api_project.api.v1.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
