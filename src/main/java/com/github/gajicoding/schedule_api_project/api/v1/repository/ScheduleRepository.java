@@ -9,7 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-
+    /*
+        SELECT s.id, s.title, s.contents, u.name, COUNT(c.id), s.created_at, s.updated_at
+        FROM schedules s
+        JOIN users u ON s.user_id = u.id
+        LEFT JOIN schedule_comments c ON s.id = c.schedule_id
+        GROUP BY s.id
+        ORDER BY s.updated_at DESC
+    */
     @Query("""
         SELECT new com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.SchedulePageResponseDTO(
             s.id,
