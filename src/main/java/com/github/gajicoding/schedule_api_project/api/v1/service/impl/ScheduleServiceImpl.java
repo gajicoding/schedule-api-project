@@ -7,6 +7,7 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.entity.Schedule;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.User;
 import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.ScheduleExceptionFactory;
 import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.UserExceptionFactory;
+import com.github.gajicoding.schedule_api_project.api.v1.repository.ScheduleCommentRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.ScheduleRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.UserRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.service.ScheduleService;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
+    private final ScheduleCommentRepository scheduleCommentRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -76,6 +78,13 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Page<SchedulePageResponseDTO> findAllPages(Pageable pageable) {
-        return scheduleRepository.findAllWithPage(pageable);
+        return scheduleRepository.findAll(pageable)
+                .map(SchedulePageResponseDTO::new)
+                .map(scheduleDTO -> {
+                    Long count = scheduleCommentRepository.countScheduleCommentBySchedule_Id(scheduleDTO.getUser().getId());
+                    scheduleDTO.setCommentCount(count);
+                    scheduleDTO.setUserName(scheduleDTO.getUser().getName());
+                    return scheduleDTO;
+                });
     }
 }
