@@ -28,7 +28,7 @@ public class User extends BaseEntity {
     private String password;
 
     public User() {
-        // no-arg 생성자가 포함되어야 함
+        // @Entity: no-arg 생성자가 포함되어야 함
     }
 
     public User(Long id){

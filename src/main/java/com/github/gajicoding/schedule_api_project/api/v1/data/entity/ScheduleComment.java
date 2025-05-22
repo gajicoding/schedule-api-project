@@ -24,7 +24,9 @@ public class ScheduleComment extends BaseEntity {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    public ScheduleComment() {}
+    public ScheduleComment() {
+        // @Entity: no-arg 생성자가 포함되어야 함
+    }
 
     public ScheduleComment(String contents, User user, Schedule schedule) {
         this.contents = contents;

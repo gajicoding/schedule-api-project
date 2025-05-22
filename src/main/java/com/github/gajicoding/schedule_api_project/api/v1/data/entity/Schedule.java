@@ -28,9 +28,8 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-
     public Schedule() {
-        // no-arg 생성자가 포함되어야 함
+        // @Entity: no-arg 생성자가 포함되어야 함
     }
 
     public void update(ScheduleRequestDTO requestDTO) {
