@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO create(UserRequestDTO requestDTO) {
-        // FIXME: AuthService 의 signup 메서드와 중복
+        // FIXME: AuthService 의 signup() 메서드와 중복
         Optional<User> existingUser = userRepository.findUserByEmail(requestDTO.getEmail());
 
         // 이메일 중복 체크

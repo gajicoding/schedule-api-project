@@ -3,7 +3,6 @@ package com.github.gajicoding.schedule_api_project.api.v1.controller;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule_comment.ScheduleCommentRequestDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule_comment.ScheduleCommentResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.service.ScheduleCommentService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,13 +25,16 @@ public class ScheduleCommentController {
      * 특정 일정의 댓글을 생성한다.
      *
      * @param scheduleId 댓글이 달릴 일정의 ID
+     * @param userId 로그인된 사용자 ID. 세션에서 주입됨
      * @param requestDTO 생성할 댓글 정보가 담긴 DTO
-     * @param session 현재 사용자 세션에서 userId를 조회하여 댓글 작성자 정보로 사용
      * @return 생성된 댓글 정보가 담긴 DTO와 HTTP 상태 코드 201 (Created)
      */
     @PostMapping
-    public ResponseEntity<ScheduleCommentResponseDTO> save(@PathVariable Long scheduleId, @RequestBody @Valid ScheduleCommentRequestDTO requestDTO, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId"); // 세션 활용
+    public ResponseEntity<ScheduleCommentResponseDTO> save(
+            @PathVariable Long scheduleId,
+            @SessionAttribute Long userId,
+            @RequestBody @Valid ScheduleCommentRequestDTO requestDTO
+    ) {
         return new ResponseEntity<>(scheduleCommentService.save(scheduleId, userId, requestDTO), HttpStatus.CREATED);
     }
 
@@ -44,7 +46,10 @@ public class ScheduleCommentController {
      * @return 조회된 댓글 정보가 담긴 DTO와 HTTP 상태 코드 200 (OK)
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ScheduleCommentResponseDTO> findById(@PathVariable("scheduleId") Long ignoredScheduleId, @PathVariable Long id) {
+    public ResponseEntity<ScheduleCommentResponseDTO> findById(
+            @PathVariable("scheduleId") Long ignoredScheduleId,
+            @PathVariable Long id
+    ) {
         return new ResponseEntity<>(scheduleCommentService.findById(id), HttpStatus.OK);
     }
 
@@ -64,12 +69,18 @@ public class ScheduleCommentController {
      *
      * @param ignoredScheduleId (사용하지 않음)
      * @param id 수정할 댓글의 ID
+     * @param userId 로그인된 사용자 ID. 세션에서 주입됨
      * @param requestDTO 수정할 댓글 정보가 담긴 DTO
      * @return 수정된 댓글 정보가 담긴 DTO와 HTTP 상태 코드 200 (OK)
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<ScheduleCommentResponseDTO> updateContents(@PathVariable("scheduleId") Long ignoredScheduleId, @PathVariable Long id, @RequestBody @Valid ScheduleCommentRequestDTO requestDTO) {
-        return new ResponseEntity<>(scheduleCommentService.updateContents(id, requestDTO), HttpStatus.OK);
+    public ResponseEntity<ScheduleCommentResponseDTO> updateContents(
+            @PathVariable("scheduleId") Long ignoredScheduleId,
+            @PathVariable Long id,
+            @SessionAttribute Long userId,
+            @RequestBody @Valid ScheduleCommentRequestDTO requestDTO
+    ) {
+        return new ResponseEntity<>(scheduleCommentService.updateContents(id, userId, requestDTO), HttpStatus.OK);
     }
 
     /**
@@ -77,11 +88,16 @@ public class ScheduleCommentController {
      *
      * @param ignoredScheduleId (사용하지 않음)
      * @param id 삭제할 댓글의 ID (경로 변수)
+     * @param userId 로그인된 사용자 ID. 세션에서 주입됨
      * @return HTTP 상태 코드 204 (No Content)
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("scheduleId") Long ignoredScheduleId, @PathVariable("id") Long id) {
-        scheduleCommentService.delete(id);
+    public ResponseEntity<Void> delete(
+            @PathVariable("scheduleId") Long ignoredScheduleId,
+            @SessionAttribute Long userId,
+            @PathVariable("id") Long id
+    ) {
+        scheduleCommentService.delete(id, userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

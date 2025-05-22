@@ -42,7 +42,7 @@ public class ScheduleCommentServiceImpl implements ScheduleCommentService {
 
     @Override
     public List<ScheduleCommentResponseDTO> findAll(Long scheduleId) {
-        return scheduleCommentRepository.findAll()
+        return scheduleCommentRepository.findAllBySchedule_Id(scheduleId)
                 .stream()
                 .map(ScheduleCommentResponseDTO::new)
                 .toList();
@@ -50,15 +50,25 @@ public class ScheduleCommentServiceImpl implements ScheduleCommentService {
 
     @Transactional
     @Override
-    public ScheduleCommentResponseDTO updateContents(Long id, ScheduleCommentRequestDTO requestDTO) {
+    public ScheduleCommentResponseDTO updateContents(Long id, Long userId, ScheduleCommentRequestDTO requestDTO) {
         ScheduleComment scheduleComment = scheduleCommentRepository.findById(id).orElseThrow(()-> ScheduleCommentExceptionFactory.notFoundById(id));
+
+        if(!userId.equals(scheduleComment.getUser().getId())){
+            throw ScheduleCommentExceptionFactory.noPermissionToUpdate();
+        }
+
         scheduleComment.setContents(requestDTO.getContents());
         return new ScheduleCommentResponseDTO(scheduleComment);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id, Long userId) {
         ScheduleComment scheduleComment = scheduleCommentRepository.findById(id).orElseThrow(()-> ScheduleCommentExceptionFactory.notFoundById(id));
+
+        if(!userId.equals(scheduleComment.getUser().getId())){
+            throw ScheduleCommentExceptionFactory.noPermissionToDelete();
+        }
+
         scheduleCommentRepository.delete(scheduleComment);
     }
 }
