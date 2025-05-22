@@ -25,14 +25,14 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final UserRepository userRepository;
 
     @Override
-    public ScheduleResponseDTO save(ScheduleRequestDTO requestDTO) {
-        Schedule schedule = scheduleRepository.save(requestDTO.toEntity());
-
-        Long userId = schedule.getUser().getId();
+    public ScheduleResponseDTO save(Long userId, ScheduleRequestDTO requestDTO) {
         User user = userRepository.findById(userId).orElseThrow(() -> UserExceptionFactory.notFoundById(userId));
+
+        Schedule schedule = requestDTO.toEntity();
         schedule.setUser(user);
 
-        return new ScheduleResponseDTO(schedule);
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+        return new ScheduleResponseDTO(savedSchedule);
     }
 
     @Override
@@ -50,8 +50,13 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Transactional
     @Override
-    public ScheduleResponseDTO update(Long id, ScheduleRequestDTO requestDTO) {
+    public ScheduleResponseDTO update(Long id, Long userId, ScheduleRequestDTO requestDTO) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionFactory.notFoundById(id));
+
+        if(!userId.equals(schedule.getUser().getId())){
+            throw ScheduleExceptionFactory.noPermissionToUpdate();
+        }
+
         schedule.update(requestDTO);
 
         scheduleRepository.flush(); // 변경 사항 강제 반영
@@ -59,8 +64,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id, Long userId) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionFactory.notFoundById(id));
+
+        if(!userId.equals(schedule.getUser().getId())){
+            throw ScheduleExceptionFactory.noPermissionToDelete();
+        }
+
         scheduleRepository.delete(schedule);
     }
 

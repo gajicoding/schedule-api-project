@@ -29,16 +29,16 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     /* Lv 1. 일정 CRUD */
-
     /**
      * 일정을 생성한다.
      *
+     * @param userId 로그인된 사용자 ID. 세션에서 주입됨
      * @param requestDTO 생성할 일정 정보가 담긴 DTO (유효성 검사 적용)
      * @return 저장된 일정 정보가 담긴 DTO와 HTTP 상태 코드 201 (Created)
      */
     @PostMapping
-    public ResponseEntity<ScheduleResponseDTO> save(@RequestBody @Validated(CreateGroup.class) ScheduleRequestDTO requestDTO) {
-        return new ResponseEntity<>(scheduleService.save(requestDTO), HttpStatus.CREATED);
+    public ResponseEntity<ScheduleResponseDTO> save(@SessionAttribute Long userId, @RequestBody @Validated(CreateGroup.class) ScheduleRequestDTO requestDTO) {
+        return new ResponseEntity<>(scheduleService.save(userId, requestDTO), HttpStatus.CREATED);
     }
 
     /**
@@ -66,23 +66,25 @@ public class ScheduleController {
      * 특정 일정 정보를 수정한다.
      *
      * @param id 수정할 일정의 ID
+     * @param userId 로그인된 사용자 ID. 세션에서 주입됨
      * @param requestDTO 수정할 일정 정보가 담긴 DTO (유효성 검사 적용)
      * @return 수정된 일정 정보가 담긴 DTO와 HTTP 상태 코드 200 (OK)
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<ScheduleResponseDTO> update(@PathVariable Long id, @RequestBody @Validated(UpdateGroup.class) ScheduleRequestDTO requestDTO) {
-        return new ResponseEntity<>(scheduleService.update(id, requestDTO), HttpStatus.OK);
+    @PatchMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDTO> update(@PathVariable Long id, @SessionAttribute Long userId, @RequestBody @Validated(UpdateGroup.class) ScheduleRequestDTO requestDTO) {
+        return new ResponseEntity<>(scheduleService.update(id, userId, requestDTO), HttpStatus.OK);
     }
 
     /**
      * 특정 일정을 삭제한다.
      *
      * @param id 삭제할 일정의 ID
+     * @param userId 로그인된 사용자 ID. 세션에서 주입됨
      * @return HTTP 상태 코드 204 (No Content)
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        scheduleService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id, @SessionAttribute Long userId) {
+        scheduleService.delete(id, userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
