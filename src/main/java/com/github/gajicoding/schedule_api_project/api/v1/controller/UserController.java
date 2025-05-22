@@ -66,7 +66,7 @@ public class UserController {
      * @param requestDTO 수정할 유저 정보가 담긴 DTO (유효성 검사 적용)
      * @return 수정된 유저 정보가 담긴 DTO와 HTTP 상태 코드 200 (OK)
      */
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateName(@PathVariable Long id, @RequestBody @Validated(UpdateGroup.class) UserRequestDTO requestDTO) {
         return new ResponseEntity<>(userService.updateName(id, requestDTO), HttpStatus.OK);
     }
