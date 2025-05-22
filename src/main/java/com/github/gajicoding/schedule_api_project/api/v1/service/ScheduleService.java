@@ -9,15 +9,15 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ScheduleService {
-    ScheduleResponseDTO save(ScheduleRequestDTO requestDTO);
+    ScheduleResponseDTO save(Long userId, ScheduleRequestDTO requestDTO);
 
     ScheduleResponseDTO findById(Long id);
 
     List<ScheduleResponseDTO> findAll();
 
-    ScheduleResponseDTO update(Long id, ScheduleRequestDTO requestDTO);
+    ScheduleResponseDTO update(Long id, Long userId, ScheduleRequestDTO requestDTO);
 
-    void delete(Long id);
+    void delete(Long id, Long userId);
 
     Page<SchedulePageResponseDTO> findAllPages(Pageable pageable);
 }

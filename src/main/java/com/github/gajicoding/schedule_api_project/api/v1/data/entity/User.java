@@ -1,6 +1,5 @@
 package com.github.gajicoding.schedule_api_project.api.v1.data.entity;
 
-import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +16,7 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Column
     private String name;
 
@@ -28,16 +28,10 @@ public class User extends BaseEntity {
     private String password;
 
     public User() {
-        // no-arg 생성자가 포함되어야 함
+        // @Entity: no-arg 생성자가 포함되어야 함
     }
 
     public User(Long id){
         this.id = id;
-    }
-
-    public void update(UserRequestDTO requestDTO) {
-        this.name = requestDTO.getName();
-        this.email = requestDTO.getEmail();
-        this.password = requestDTO.getPassword();
     }
 }

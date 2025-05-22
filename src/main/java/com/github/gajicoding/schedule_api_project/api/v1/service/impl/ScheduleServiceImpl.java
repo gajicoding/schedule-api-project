@@ -5,8 +5,9 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.Sched
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.ScheduleResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.Schedule;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.User;
-import com.github.gajicoding.schedule_api_project.api.v1.exception.ScheduleExceptions;
-import com.github.gajicoding.schedule_api_project.api.v1.exception.UserExceptions;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.ScheduleExceptionFactory;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.UserExceptionFactory;
+import com.github.gajicoding.schedule_api_project.api.v1.repository.ScheduleCommentRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.ScheduleRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.UserRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.service.ScheduleService;
@@ -22,22 +23,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
+    private final ScheduleCommentRepository scheduleCommentRepository;
     private final UserRepository userRepository;
 
     @Override
-    public ScheduleResponseDTO save(ScheduleRequestDTO requestDTO) {
-        Schedule schedule = scheduleRepository.save(requestDTO.toEntity());
+    public ScheduleResponseDTO save(Long userId, ScheduleRequestDTO requestDTO) {
+        User user = userRepository.findById(userId).orElseThrow(() -> UserExceptionFactory.notFoundById(userId));
 
-        Long userId = schedule.getUser().getId();
-        User user = userRepository.findById(userId).orElseThrow(() -> UserExceptions.notFoundById(userId));
+        Schedule schedule = requestDTO.toEntity();
         schedule.setUser(user);
 
-        return new ScheduleResponseDTO(schedule);
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+        return new ScheduleResponseDTO(savedSchedule);
     }
 
     @Override
     public ScheduleResponseDTO findById(Long id) {
-        return new ScheduleResponseDTO(scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptions.notFoundById(id)));
+        return new ScheduleResponseDTO(scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionFactory.notFoundById(id)));
     }
 
     @Override
@@ -50,20 +52,39 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Transactional
     @Override
-    public ScheduleResponseDTO update(Long id, ScheduleRequestDTO requestDTO) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptions.notFoundById(id));
+    public ScheduleResponseDTO update(Long id, Long userId, ScheduleRequestDTO requestDTO) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionFactory.notFoundById(id));
+
+        if(!userId.equals(schedule.getUser().getId())){
+            throw ScheduleExceptionFactory.noPermissionToUpdate();
+        }
+
         schedule.update(requestDTO);
+
+        scheduleRepository.flush(); // 변경 사항 강제 반영
         return new ScheduleResponseDTO(schedule);
     }
 
     @Override
-    public void delete(Long id) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptions.notFoundById(id));
+    public void delete(Long id, Long userId) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionFactory.notFoundById(id));
+
+        if(!userId.equals(schedule.getUser().getId())){
+            throw ScheduleExceptionFactory.noPermissionToDelete();
+        }
+
         scheduleRepository.delete(schedule);
     }
 
     @Override
     public Page<SchedulePageResponseDTO> findAllPages(Pageable pageable) {
-        return scheduleRepository.findAllWithPage(pageable);
+        return scheduleRepository.findAll(pageable)
+                .map(SchedulePageResponseDTO::new)
+                .map(scheduleDTO -> {
+                    Long count = scheduleCommentRepository.countScheduleCommentBySchedule_Id(scheduleDTO.getUser().getId());
+                    scheduleDTO.setCommentCount(count);
+                    scheduleDTO.setUserName(scheduleDTO.getUser().getName());
+                    return scheduleDTO;
+                });
     }
 }

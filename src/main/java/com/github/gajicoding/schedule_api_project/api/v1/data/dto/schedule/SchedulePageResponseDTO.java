@@ -1,23 +1,18 @@
 package com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule;
 
-import lombok.AllArgsConstructor;
+import com.github.gajicoding.schedule_api_project.api.v1.data.entity.Schedule;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
-public class SchedulePageResponseDTO {
-    private final Long id;
-    private final String title;
-    private final String contents;
+@Setter
+public class SchedulePageResponseDTO extends ScheduleResponseDTO {
 
-    @Setter
     private Long commentCount;
+    private String userName;
 
-    private final String userName;
-
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    public SchedulePageResponseDTO(Schedule schedule) {
+        super(schedule);
+    }
 }

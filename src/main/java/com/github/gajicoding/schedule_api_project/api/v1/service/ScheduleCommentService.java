@@ -12,7 +12,7 @@ public interface ScheduleCommentService {
 
     List<ScheduleCommentResponseDTO> findAll(Long scheduleId);
 
-    ScheduleCommentResponseDTO updateContents(Long id, ScheduleCommentRequestDTO requestDTO);
+    ScheduleCommentResponseDTO updateContents(Long id, Long userId, ScheduleCommentRequestDTO requestDTO);
 
-    void delete(Long id);
+    void delete(Long id, Long userId);
 }
