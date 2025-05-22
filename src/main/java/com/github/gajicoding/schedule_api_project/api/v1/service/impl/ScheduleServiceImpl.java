@@ -53,6 +53,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleResponseDTO update(Long id, ScheduleRequestDTO requestDTO) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptions.notFoundById(id));
         schedule.update(requestDTO);
+
+        scheduleRepository.flush(); // 변경 사항 강제 반영
         return new ScheduleResponseDTO(schedule);
     }
 
