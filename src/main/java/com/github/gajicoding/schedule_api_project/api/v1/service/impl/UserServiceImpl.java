@@ -53,23 +53,4 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> UserExceptionFactory.notFoundById(id)); // 유저 체크
         userRepository.delete(user);
     }
-
-    @Override
-    public UserResponseDTO signup(UserSignUpRequestDTO requestDTO) {
-        User user = requestDTO.toEntity();
-        user.setPassword(passwordEncryptor.encode(user.getPassword()));
-
-        return new UserResponseDTO(userRepository.save(user));
-    }
-
-    @Override
-    public UserResponseDTO login(UserLoginRequestDTO requestDTO) {
-        User user = userRepository.findUserByEmail(requestDTO.getEmail()).orElseThrow(UserExceptionFactory::loginFailed);
-        if(!passwordEncryptor.matches(requestDTO.getPassword(), user.getPassword())) {
-            throw UserExceptionFactory.loginFailed();
-        }
-        return new UserResponseDTO(user);
-    }
-
-
 }

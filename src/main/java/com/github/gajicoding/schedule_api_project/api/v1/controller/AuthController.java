@@ -3,6 +3,7 @@ package com.github.gajicoding.schedule_api_project.api.v1.controller;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserLoginRequestDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserSignUpRequestDTO;
+import com.github.gajicoding.schedule_api_project.api.v1.service.AuthService;
 import com.github.gajicoding.schedule_api_project.api.v1.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserService userService;
+    private final AuthService authService;
 
     /* Lv 3. 회원 가입 */
     /**
@@ -34,7 +35,7 @@ public class AuthController {
      */
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDTO> signup(@RequestBody @Validated UserSignUpRequestDTO requestDTO) {
-        return new ResponseEntity<>(userService.signup(requestDTO), HttpStatus.OK);
+        return new ResponseEntity<>(authService.signup(requestDTO), HttpStatus.OK);
     }
 
     /* Lv 4. 로그인 */
@@ -47,7 +48,7 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<UserResponseDTO> login(@RequestBody @Validated UserLoginRequestDTO requestDTO, HttpSession session) {
-        UserResponseDTO userResponseDTO = userService.login(requestDTO);
+        UserResponseDTO userResponseDTO = authService.login(requestDTO);
 
         // 세션 저장
         session.setAttribute("userId", userResponseDTO.getId());
