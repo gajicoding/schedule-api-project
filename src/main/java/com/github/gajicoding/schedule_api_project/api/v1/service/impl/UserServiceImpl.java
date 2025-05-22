@@ -6,7 +6,7 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserReque
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserSignUpRequestDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.User;
-import com.github.gajicoding.schedule_api_project.api.v1.exception.UserExceptions;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.UserExceptionFactory;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.UserRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO findById(Long id) {
-        return new UserResponseDTO(userRepository.findById(id).orElseThrow(() -> UserExceptions.notFoundById(id)));
+        return new UserResponseDTO(userRepository.findById(id).orElseThrow(() -> UserExceptionFactory.notFoundById(id)));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserResponseDTO update(Long id, UserRequestDTO requestDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> UserExceptions.notFoundById(id)); // 유저 체크
+        User user = userRepository.findById(id).orElseThrow(() -> UserExceptionFactory.notFoundById(id)); // 유저 체크
         user.update(requestDTO);
 
         return new UserResponseDTO(user);
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> UserExceptions.notFoundById(id)); // 유저 체크
+        User user = userRepository.findById(id).orElseThrow(() -> UserExceptionFactory.notFoundById(id)); // 유저 체크
         userRepository.delete(user);
     }
 
@@ -64,9 +64,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO login(UserLoginRequestDTO requestDTO) {
-        User user = userRepository.findUserByEmail(requestDTO.getEmail()).orElseThrow(UserExceptions::loginFailed);
+        User user = userRepository.findUserByEmail(requestDTO.getEmail()).orElseThrow(UserExceptionFactory::loginFailed);
         if(!passwordEncryptor.matches(requestDTO.getPassword(), user.getPassword())) {
-            throw UserExceptions.loginFailed();
+            throw UserExceptionFactory.loginFailed();
         }
         return new UserResponseDTO(user);
     }
