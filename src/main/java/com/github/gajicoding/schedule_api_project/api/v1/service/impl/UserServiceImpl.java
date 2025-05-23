@@ -1,6 +1,6 @@
 package com.github.gajicoding.schedule_api_project.api.v1.service.impl;
 
-import com.github.gajicoding.schedule_api_project.common.security.PasswordEncryptor;
+import com.github.gajicoding.schedule_api_project.common.security.PasswordEncoder;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserRequestDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.User;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncryptor passwordEncryptor;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDTO create(UserRequestDTO requestDTO) {
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
         User user = requestDTO.toEntity();
 
         // 비밀번호 암호화 후 저장
-        user.setPassword(passwordEncryptor.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return new UserResponseDTO(userRepository.save(user));
     }
 
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> UserExceptionFactory.notFoundById(id)); // 유저 체크
 
         // 비밀번호 일치 확인
-        if(!passwordEncryptor.matches(requestDTO.getPassword(), user.getPassword())) {
+        if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
             throw UserExceptionFactory.invalidPassword();
         }
 
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> UserExceptionFactory.notFoundById(id)); // 유저 체크
 
         // 비밀번호 일치 확인
-        if(!passwordEncryptor.matches(requestDTO.getPassword(), user.getPassword())) {
+        if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
             throw UserExceptionFactory.invalidPassword();
         }
 
