@@ -61,7 +61,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         schedule.update(requestDTO);
 
-        scheduleRepository.flush(); // 변경 사항 강제 반영
+        // DB 에 변경 사항 강제 반영
+        userRepository.flush();
+
         return new ScheduleResponseDTO(schedule);
     }
 

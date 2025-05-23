@@ -7,6 +7,7 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.entity.User;
 import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.UserExceptionFactory;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.UserRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.service.UserService;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,8 +18,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EntityManager entityManager;
 
     @Override
     public UserResponseDTO create(UserRequestDTO requestDTO) {
@@ -63,7 +66,9 @@ public class UserServiceImpl implements UserService {
         // 이름 변경
         user.setName(requestDTO.getName());
 
-        userRepository.flush(); // 변경 사항 강제 반영
+        // DB 에 변경 사항 강제 반영
+        userRepository.flush();
+
         return new UserResponseDTO(user);
     }
 

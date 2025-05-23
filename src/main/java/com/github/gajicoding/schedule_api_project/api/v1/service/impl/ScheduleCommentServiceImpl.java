@@ -58,6 +58,10 @@ public class ScheduleCommentServiceImpl implements ScheduleCommentService {
         }
 
         scheduleComment.setContents(requestDTO.getContents());
+
+        // DB 에 변경 사항 강제 반영
+        scheduleCommentRepository.flush();
+
         return new ScheduleCommentResponseDTO(scheduleComment);
     }
 

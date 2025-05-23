@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at DATETIME COMMENT '수정일'
 ) COMMENT = '유저 Table';
 
+
 -- schedules 테이블 생성
 DROP TABLE IF EXISTS schedules;
 CREATE TABLE IF NOT EXISTS schedules (
