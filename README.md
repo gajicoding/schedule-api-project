@@ -30,6 +30,7 @@
 
 ## 📜 API 명세서
 Postman: [document](https://documenter.getpostman.com/view/44635744/2sB2qaigm8)
+
 <br>
 
 ## 🧮 데이터 베이스 설계
