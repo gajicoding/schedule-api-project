@@ -8,9 +8,10 @@
 <br>
 
 ## 💻 개발 도구
-- Postman
-- Git
 - IntelliJ IDEA
+- Git
+- Postman
+
 <br>
 
 ## 📝 단계별 요구사항
