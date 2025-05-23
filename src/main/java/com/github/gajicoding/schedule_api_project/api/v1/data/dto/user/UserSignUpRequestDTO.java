@@ -4,11 +4,9 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.entity.User;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class UserSignUpRequestDTO {
 
     @NotNull(message = "이름이 입력되지 않았습니다.")

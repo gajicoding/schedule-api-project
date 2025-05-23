@@ -1,13 +1,13 @@
 package com.github.gajicoding.schedule_api_project.api.v1.data.dto.user;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class UserLoginRequestDTO {
-
+    @NotNull
     private String email;
 
+    @NotNull
     private String password;
 }

@@ -4,12 +4,10 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.entity.Schedule;
 import com.github.gajicoding.schedule_api_project.api.v1.validation.CreateGroup;
 import com.github.gajicoding.schedule_api_project.api.v1.validation.UpdateGroup;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import jakarta.validation.constraints.NotNull;
 
 @Getter
-@AllArgsConstructor
 public class ScheduleRequestDTO {
 
     @NotNull(groups = {CreateGroup.class}, message = "제목이 입력되지 않았습니다.")
