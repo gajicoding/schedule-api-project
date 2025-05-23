@@ -78,13 +78,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Page<SchedulePageResponseDTO> findAllPages(Pageable pageable) {
-        return scheduleRepository.findAll(pageable)
-                .map(SchedulePageResponseDTO::new)
-                .map(scheduleDTO -> {
-                    Long count = scheduleCommentRepository.countScheduleCommentBySchedule_Id(scheduleDTO.getUser().getId());
-                    scheduleDTO.setCommentCount(count);
-                    scheduleDTO.setUserName(scheduleDTO.getUser().getName());
-                    return scheduleDTO;
-                });
+        Page<Schedule> schedules = scheduleRepository.findAll(pageable);
+
+        return schedules.map(schedule -> {
+            Long count = scheduleCommentRepository.countScheduleCommentBySchedule_Id(schedule.getUser().getId());
+            String userName = schedule.getUser().getName();
+            return new SchedulePageResponseDTO(schedule, count, userName);
+        });
     }
 }

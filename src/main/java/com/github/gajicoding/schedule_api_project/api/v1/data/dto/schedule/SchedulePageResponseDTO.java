@@ -1,18 +1,34 @@
 package com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.Schedule;
 import lombok.Getter;
-import lombok.Setter;
 
+import java.time.LocalDateTime;
 
+@JsonPropertyOrder({
+        "id", "title", "contents", "commentCount", "userName", "createdAt", "updatedAt"
+})
 @Getter
-@Setter
-public class SchedulePageResponseDTO extends ScheduleResponseDTO {
+public class SchedulePageResponseDTO {
+    private final Long id;
+    private final String title;
+    private final String contents;
 
-    private Long commentCount;
-    private String userName;
+    private final Long commentCount;
+    private final String userName;
 
-    public SchedulePageResponseDTO(Schedule schedule) {
-        super(schedule);
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+
+    public SchedulePageResponseDTO(Schedule schedule, Long commentCount, String userName) {
+        this.id = schedule.getId();
+        this.title = schedule.getTitle();
+        this.contents = schedule.getContents();
+        this.createdAt = schedule.getCreatedAt();
+        this.updatedAt = schedule.getUpdatedAt();
+
+        this.commentCount = commentCount;
+        this.userName = userName;
     }
 }
