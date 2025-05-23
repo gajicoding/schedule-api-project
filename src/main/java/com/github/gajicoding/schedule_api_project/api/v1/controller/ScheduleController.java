@@ -9,6 +9,7 @@ import com.github.gajicoding.schedule_api_project.api.v1.validation.CreateGroup;
 import com.github.gajicoding.schedule_api_project.api.v1.validation.UpdateGroup;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -93,15 +95,22 @@ public class ScheduleController {
     /**
      * 페이징을 적용하여 일정을 조회한다.
      *
-     * @param pageable 페이징 및 정렬 정보 (페이지: 0, 크기: 10, 정렬: updatedAt 내림차순)
+     * @param page 페이지 번호 (default 0)
+     * @param size 페이지 크기 (default 10)
      * @return 페이징 처리된 일정 정보가 담긴 Page 객체와 HTTP 상태 코드 200 (OK)
      */
     @GetMapping("/pages")
     public ResponseEntity<Page<SchedulePageResponseDTO>> findAllPages(
-            // page = 0, size = 10 는 디폴트 값
-            // sort 값은 Entity 필드명 (DB 컬럼명 X)
-            @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
+        if(page < 1 || size < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "page 와 size 는 1 이상의 값이어야 합니다.");
+        }
+
+        // 디폴트 값: page = 0, size = 10, sort = "updatedAt", direction = Sort.Direction.DESC
+        // sort 값은 Entity 필드명 (DB 컬럼명 X)
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.DESC, "updatedAt");
         return new ResponseEntity<>(scheduleService.findAllPages(pageable), HttpStatus.OK);
     }
 }
