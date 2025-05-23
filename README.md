@@ -66,3 +66,10 @@ src.github.gajicoding.schedule_api_project
 
 ## 🔍 새로운 지식
 프로젝트를 진행하면서 알게된 지식 정리
+- [Spring Boot 환경별 설정 관리하기 – application-{profile}.properties](https://gajicoding.tistory.com/350)
+- [Spring Boot Logger 사용법 – SLF4J & Logback](https://gajicoding.tistory.com/351)
+- [JSON 포맷 변경하기: Jackson 설정 커스터마이징](https://gajicoding.tistory.com/354)
+
+## 🧰 문제 해결 (트러블 슈팅)
+- [JPA 변경사항이 즉시 반영되지 않을 때 - 영속성 컨텍스트와 DB 값 불일치 문제](https://gajicoding.tistory.com/352)
+- [@LastModifiedDate 와 DB의 ON UPDATE CURRENT_TIMESTAMP 동시 사용 문제](https://gajicoding.tistory.com/353)
