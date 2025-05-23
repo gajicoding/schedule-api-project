@@ -32,7 +32,7 @@
 Postman: [document](https://documenter.getpostman.com/view/44635744/2sB2qaigm8)
 <br>
 
-🧮 데이터 베이스 설계
+## 🧮 데이터 베이스 설계
 <details>
 <summary>최종 DB</summary>
 
