@@ -4,7 +4,7 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserLogin
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserSignUpRequestDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.User;
-import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.UserExceptionFactory;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.helper.UserExceptionHelper;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.UserRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.service.AuthService;
 import com.github.gajicoding.schedule_api_project.common.security.PasswordEncoder;
@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 이메일 중복 체크
         if(existingUser.isPresent()) {
-            throw UserExceptionFactory.emailAlreadyExists(requestDTO.getEmail());
+            throw UserExceptionHelper.emailAlreadyExists(requestDTO.getEmail());
         }
 
         User user = requestDTO.toEntity();
@@ -38,11 +38,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserResponseDTO login(UserLoginRequestDTO requestDTO) {
         // 이메일로 유저 찾기
-        User user = userRepository.findUserByEmail(requestDTO.getEmail()).orElseThrow(UserExceptionFactory::loginFailed);
+        User user = userRepository.findUserByEmail(requestDTO.getEmail()).orElseThrow(UserExceptionHelper::loginFailed);
 
         // 비밀번호 일치 확인
         if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
-            throw UserExceptionFactory.loginFailed();
+            throw UserExceptionHelper.loginFailed();
         }
 
         return new UserResponseDTO(user);

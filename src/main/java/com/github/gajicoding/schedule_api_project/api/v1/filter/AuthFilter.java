@@ -1,6 +1,6 @@
 package com.github.gajicoding.schedule_api_project.api.v1.filter;
 
-import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.UserExceptionFactory;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.helper.UserExceptionHelper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -22,7 +22,7 @@ public class AuthFilter implements Filter {
             HttpSession session = httpRequest.getSession(false);
 
             if(session == null || session.getAttribute("userId") == null) {
-                throw UserExceptionFactory.requiredSession();
+                throw UserExceptionHelper.requiredSession();
             }
         }
 

@@ -5,9 +5,9 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule_comme
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.Schedule;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.ScheduleComment;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.User;
-import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.ScheduleCommentExceptionFactory;
-import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.ScheduleExceptionFactory;
-import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.UserExceptionFactory;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.helper.ScheduleCommentExceptionHelper;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.helper.ScheduleExceptionHelper;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.helper.UserExceptionHelper;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.ScheduleCommentRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.ScheduleRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.UserRepository;
@@ -27,8 +27,8 @@ public class ScheduleCommentServiceImpl implements ScheduleCommentService {
 
     @Override
     public ScheduleCommentResponseDTO save(Long scheduleId, Long userId, ScheduleCommentRequestDTO requestDTO) {
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(()-> ScheduleExceptionFactory.notFoundById(scheduleId));
-        User user = userRepository.findById(userId).orElseThrow(() -> UserExceptionFactory.notFoundById(userId));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(()-> ScheduleExceptionHelper.notFoundById(scheduleId));
+        User user = userRepository.findById(userId).orElseThrow(() -> UserExceptionHelper.notFoundById(userId));
 
         ScheduleComment scheduleComment = new ScheduleComment(requestDTO.getContents(), user, schedule);
 
@@ -37,7 +37,7 @@ public class ScheduleCommentServiceImpl implements ScheduleCommentService {
 
     @Override
     public ScheduleCommentResponseDTO findById(Long id) {
-        return new ScheduleCommentResponseDTO(scheduleCommentRepository.findById(id).orElseThrow(()-> ScheduleCommentExceptionFactory.notFoundById(id)));
+        return new ScheduleCommentResponseDTO(scheduleCommentRepository.findById(id).orElseThrow(()-> ScheduleCommentExceptionHelper.notFoundById(id)));
     }
 
     @Override
@@ -51,10 +51,10 @@ public class ScheduleCommentServiceImpl implements ScheduleCommentService {
     @Transactional
     @Override
     public ScheduleCommentResponseDTO updateContents(Long id, Long userId, ScheduleCommentRequestDTO requestDTO) {
-        ScheduleComment scheduleComment = scheduleCommentRepository.findById(id).orElseThrow(()-> ScheduleCommentExceptionFactory.notFoundById(id));
+        ScheduleComment scheduleComment = scheduleCommentRepository.findById(id).orElseThrow(()-> ScheduleCommentExceptionHelper.notFoundById(id));
 
         if(!userId.equals(scheduleComment.getUser().getId())){
-            throw ScheduleCommentExceptionFactory.noPermissionToUpdate();
+            throw ScheduleCommentExceptionHelper.noPermissionToUpdate();
         }
 
         scheduleComment.setContents(requestDTO.getContents());
@@ -67,10 +67,10 @@ public class ScheduleCommentServiceImpl implements ScheduleCommentService {
 
     @Override
     public void delete(Long id, Long userId) {
-        ScheduleComment scheduleComment = scheduleCommentRepository.findById(id).orElseThrow(()-> ScheduleCommentExceptionFactory.notFoundById(id));
+        ScheduleComment scheduleComment = scheduleCommentRepository.findById(id).orElseThrow(()-> ScheduleCommentExceptionHelper.notFoundById(id));
 
         if(!userId.equals(scheduleComment.getUser().getId())){
-            throw ScheduleCommentExceptionFactory.noPermissionToDelete();
+            throw ScheduleCommentExceptionHelper.noPermissionToDelete();
         }
 
         scheduleCommentRepository.delete(scheduleComment);

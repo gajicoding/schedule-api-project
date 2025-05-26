@@ -4,7 +4,7 @@ import com.github.gajicoding.schedule_api_project.common.security.PasswordEncode
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserRequestDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.user.UserResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.User;
-import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.UserExceptionFactory;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.helper.UserExceptionHelper;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.UserRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
         // 이메일 중복 체크
         if(existingUser.isPresent()) {
-            throw UserExceptionFactory.emailAlreadyExists(requestDTO.getEmail());
+            throw UserExceptionHelper.emailAlreadyExists(requestDTO.getEmail());
         }
 
         User user = requestDTO.toEntity();
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO findById(Long id) {
-        return new UserResponseDTO(userRepository.findById(id).orElseThrow(() -> UserExceptionFactory.notFoundById(id)));
+        return new UserResponseDTO(userRepository.findById(id).orElseThrow(() -> UserExceptionHelper.notFoundById(id)));
     }
 
     @Override
@@ -54,11 +54,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserResponseDTO updateName(Long id, UserRequestDTO requestDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> UserExceptionFactory.notFoundById(id)); // 유저 체크
+        User user = userRepository.findById(id).orElseThrow(() -> UserExceptionHelper.notFoundById(id)); // 유저 체크
 
         // 비밀번호 일치 확인
         if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
-            throw UserExceptionFactory.invalidPassword();
+            throw UserExceptionHelper.invalidPassword();
         }
 
         // 이름 변경
@@ -72,11 +72,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id, UserRequestDTO requestDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> UserExceptionFactory.notFoundById(id)); // 유저 체크
+        User user = userRepository.findById(id).orElseThrow(() -> UserExceptionHelper.notFoundById(id)); // 유저 체크
 
         // 비밀번호 일치 확인
         if(!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
-            throw UserExceptionFactory.invalidPassword();
+            throw UserExceptionHelper.invalidPassword();
         }
 
         userRepository.delete(user);

@@ -5,8 +5,8 @@ import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.Sched
 import com.github.gajicoding.schedule_api_project.api.v1.data.dto.schedule.ScheduleResponseDTO;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.Schedule;
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.User;
-import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.ScheduleExceptionFactory;
-import com.github.gajicoding.schedule_api_project.api.v1.exception.factory.UserExceptionFactory;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.helper.ScheduleExceptionHelper;
+import com.github.gajicoding.schedule_api_project.api.v1.exception.helper.UserExceptionHelper;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.ScheduleCommentRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.ScheduleRepository;
 import com.github.gajicoding.schedule_api_project.api.v1.repository.UserRepository;
@@ -28,7 +28,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleResponseDTO save(Long userId, ScheduleRequestDTO requestDTO) {
-        User user = userRepository.findById(userId).orElseThrow(() -> UserExceptionFactory.notFoundById(userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> UserExceptionHelper.notFoundById(userId));
 
         Schedule schedule = requestDTO.toEntity();
         schedule.setUser(user);
@@ -39,7 +39,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleResponseDTO findById(Long id) {
-        return new ScheduleResponseDTO(scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionFactory.notFoundById(id)));
+        return new ScheduleResponseDTO(scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionHelper.notFoundById(id)));
     }
 
     @Override
@@ -53,10 +53,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     @Override
     public ScheduleResponseDTO update(Long id, Long userId, ScheduleRequestDTO requestDTO) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionFactory.notFoundById(id));
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionHelper.notFoundById(id));
 
         if(!userId.equals(schedule.getUser().getId())){
-            throw ScheduleExceptionFactory.noPermissionToUpdate();
+            throw ScheduleExceptionHelper.noPermissionToUpdate();
         }
 
         schedule.update(requestDTO);
@@ -69,10 +69,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public void delete(Long id, Long userId) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionFactory.notFoundById(id));
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()-> ScheduleExceptionHelper.notFoundById(id));
 
         if(!userId.equals(schedule.getUser().getId())){
-            throw ScheduleExceptionFactory.noPermissionToDelete();
+            throw ScheduleExceptionHelper.noPermissionToDelete();
         }
 
         scheduleRepository.delete(schedule);
