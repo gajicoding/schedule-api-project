@@ -2,8 +2,12 @@ package com.github.gajicoding.schedule_api_project.api.v1.repository;
 
 import com.github.gajicoding.schedule_api_project.api.v1.data.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+
 
     /*
         SELECT s.id, s.title, s.contents, u.name, COUNT(c.id), s.created_at, s.updated_at
